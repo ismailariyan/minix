@@ -5,5 +5,7 @@
             Home
         </h2>
     </div>
+    <livewire:components.compose.compose />
+    <livewire:components.timeline />
 </div>
 
