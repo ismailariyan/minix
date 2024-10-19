@@ -34,7 +34,7 @@
                     <div style="margin-top: -6rem;">
                         <div style="height:9rem; width:9rem;" class="md rounded-full relative avatar">
                             <img style="height:9rem; width:9rem;"
-                                 class="border shadow md rounded-full relative border-4 border-gray-900"
+                                 class="shadow md rounded-full relative border-4 border-gray-900"
                                  src="{{ $user->profile_photo_url }}" alt="Profile photo of {{ $user->name }}">
                             <div class="absolute"></div>
                         </div>
@@ -45,18 +45,39 @@
                     @if ($user->id === auth()->user()->id)
                         <div class="flex flex-col text-right">
                             <button type="button"
-                                    class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                    class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 items-center font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                 Edit Profile
                             </button>
                         </div>
                     @else
                         <button type="button"
+                                wire:click="toggleFollow"
                                 class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
-                            Follow
+                            {{auth()->user()->isFollowing($user) ? 'Unfollow' : 'Follow'}}
                         </button>
                     @endif
                 </div>
             </div>
+            <div class="space-y-1 justify-center w-full mt-3 ml-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $user->name }}</h1>
+                    <p class="text-gray-500 dark:text-gray-400">{{ '@' . $user->username }}</p>
+                </div>
+            </div>
+                <div class="mt-3">
+                    <p class=" dark:text-white leading-tight mb-2 text-gray-900"></p>
+                </div>
+
+                <div class="pt-3 flex justify-start items-start w-full divide-x divide-gray-800 divide-solid">
+                    <div class="text-center pr-3">
+                        <span class="font-bold text-gray-700 dark:text-white">{{$user->following()->count()}}</span>
+                        <span class="text-gray-600">Following</span>
+                    </div>
+                    <div class="text-center pr-3">
+                        <span class="font-bold text-gray-700 dark:text-white">{{$user->followers()->count()}}</span>
+                        <span class="text-gray-600">Followers</span>
+                    </div>
+                </div>
         </div>
     </div>
 </div>
