@@ -3,7 +3,9 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
@@ -19,7 +21,7 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        //username validation for Twitter-like 
+        // Validation logic for the user input
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'username' => [
@@ -27,7 +29,7 @@ class CreateNewUser implements CreatesNewUsers
                 'string', 
                 'min:4', 
                 'max:15', 
-                'regex:/^[a-zA-Z0-9_]+$/', 
+                'regex:/^[a-zA-Z0-9_]+$/',
                 'unique:users,username',
             ],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
@@ -35,11 +37,17 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        // Create the user
+        $user = User::create([
             'name' => $input['name'],
             'username' => $input['username'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
+
+        // Queue the welcome email
+        Mail::to($user->email)->queue(new WelcomeEmail($user));
+
+        return $user;
     }
 }
