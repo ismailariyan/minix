@@ -49,7 +49,6 @@
                 </div>
             @endif
 
-            <livewire:components.tweets.share-action :tweet="$tweet" />
         </div>
     </div>
 </div>
