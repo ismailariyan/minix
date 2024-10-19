@@ -19,10 +19,18 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        //username validation for Twitter-like 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255','unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => [
+                'required', 
+                'string', 
+                'min:4', 
+                'max:15', 
+                'regex:/^[a-zA-Z0-9_]+$/', 
+                'unique:users,username',
+            ],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
